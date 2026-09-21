@@ -67,7 +67,7 @@
 
             <div class="pl-tier__qty">{{ qty }}<small>{{ section.settings.unit_label }}</small></div>
             {% render 'pl-price', price: price, compare_at: mrp, class: 'pl-tier__price' %}
-            <p class="pl-tier__per">{{ section.settings.per_product_text | replace: '{price}', per }}</p>
+            <p class="pl-tier__per">{{ section.settings.per_product_text | replace: '[price]', per }}</p>
 
             {%- if t.perks.value.size > 0 -%}
               <ul class="pl-tier__perks" role="list">
@@ -105,7 +105,7 @@
     { "type": "range", "id": "limit", "label": "Tiers to show", "min": 1, "max": 6, "step": 1, "default": 3 },
     { "type": "header", "content": "Tier text" },
     { "type": "text", "id": "unit_label", "label": "Unit under the number", "default": "Products" },
-    { "type": "text", "id": "per_product_text", "label": "Per-product line", "default": "Flat {price} per product", "info": "{price} is replaced by the bundle price divided by the quantity." },
+    { "type": "text", "id": "per_product_text", "label": "Per-product line", "default": "Flat [price] per product", "info": "[price] is replaced by the bundle price divided by the quantity." },
     { "type": "text", "id": "cta_label", "label": "Default button label", "default": "Build this box", "info": "A tier can override this." },
     { "type": "header", "content": "Advanced" },
     { "type": "text", "id": "anchor", "label": "Anchor ID", "default": "bundles" },
