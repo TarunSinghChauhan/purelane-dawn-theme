@@ -12,10 +12,10 @@
 {%- endcomment -%}
 {%- liquid
   assign qty = tier.quantity.value | at_least: 1
-  assign price = tier.bundle_price.value | plus: 0
+  assign price = tier.bundle_price.value | times: 100 | round
   assign mrp = 0
   if tier.compare_at_price.value != blank
-    assign mrp = tier.compare_at_price.value | plus: 0
+    assign mrp = tier.compare_at_price.value | times: 100 | round
   else
     for p in tier.products.value
       assign v = p.selected_or_first_available_variant
