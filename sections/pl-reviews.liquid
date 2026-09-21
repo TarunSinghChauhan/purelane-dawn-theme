@@ -1,0 +1,91 @@
+{{ 'pl-base.css' | asset_url | stylesheet_tag }}
+{{ 'pl-reviews.css' | asset_url | stylesheet_tag }}
+{% render 'pl-fonts' %}
+
+{%- assign reviews = shop.metaobjects.pl_review.values -%}
+
+<section
+  class="pl-sec"
+  id="{{ section.settings.anchor | default: 'reviews' | handleize }}"
+  data-pl-scene="{{ section.settings.scene }}"
+  aria-labelledby="pl-reviews-{{ section.id }}"
+>
+  <h2 class="pl-visually-hidden" id="pl-reviews-{{ section.id }}">{{ section.settings.heading_sr }}</h2>
+
+  <div class="pl-wrap">
+    <div class="pl-revhead pl-rv">
+      {%- if section.settings.kicker != blank -%}<span class="pl-kicker">{{ section.settings.kicker }}</span>{%- endif -%}
+      {%- if section.settings.rating != blank -%}
+        <span class="pl-agg">
+          <span class="pl-stars" aria-hidden="true">★★★★★</span>
+          <span><b>{{ section.settings.rating }}</b> {{ section.settings.rating_text }}</span>
+        </span>
+      {%- endif -%}
+      {%- if section.settings.homes_number != blank -%}
+        <span class="pl-agg">{{ section.settings.homes_prefix }} <b>{{ section.settings.homes_number }}</b> {{ section.settings.homes_suffix }}</span>
+      {%- endif -%}
+    </div>
+  </div>
+
+  {%- if reviews.size > 0 -%}
+    <div class="pl-revwrap">
+      <div class="pl-revrail pl-rv" data-pl-revrail tabindex="0" role="region" aria-label="{{ section.settings.heading_sr | escape }}">
+        <div class="pl-revtrack">
+          {%- for review in reviews limit: section.settings.limit -%}
+            {%- liquid
+              assign stars = review.stars.value | default: 5 | at_most: 5 | at_least: 1
+              assign product = review.product.value
+              assign product_label = product.metafields.custom.short_name.value | default: product.title
+              assign author = review.author.value | default: 'Verified buyer'
+            -%}
+            <article class="pl-glass-2 pl-rcard">
+              <span class="pl-stars" aria-hidden="true">{% for i in (1..stars) %}★{% endfor %}</span>
+              <span class="pl-visually-hidden">{{ stars }} out of 5 stars</span>
+              <h3 class="pl-rcard__title">{{ review.title.value }}</h3>
+              <p class="pl-rcard__body">{{ review.body.value }}</p>
+              <div class="pl-rcard__who">
+                {% render 'pl-icon', name: 'check', stroke_width: 3 %}
+                <b>{{ author }}</b>
+                {%- if product_label != blank -%}<span>· {{ product_label }}</span>{%- endif -%}
+              </div>
+            </article>
+          {%- endfor -%}
+        </div>
+      </div>
+      <button type="button" class="pl-revpause" data-pl-revpause aria-pressed="false" hidden>Pause reviews</button>
+    </div>
+  {%- elsif request.design_mode -%}
+    <p class="pl-empty-note">Add "Purelane review" entries under Content → Metaobjects.</p>
+  {%- endif -%}
+</section>
+
+<script src="{{ 'pl-reveal.js' | asset_url }}" defer></script>
+<script src="{{ 'pl-reviews.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "Purelane reviews rail",
+  "tag": "div",
+  "class": "pl",
+  "settings": [
+    { "type": "text", "id": "kicker", "label": "Kicker", "default": "That's what they said" },
+    { "type": "text", "id": "rating", "label": "Average rating", "default": "4.8" },
+    { "type": "text", "id": "rating_text", "label": "Text after rating", "default": "from 8,000+ reviews" },
+    { "type": "text", "id": "homes_prefix", "label": "Second stat: before", "default": "Loved by" },
+    { "type": "text", "id": "homes_number", "label": "Second stat: highlighted", "default": "12 lakh+" },
+    { "type": "text", "id": "homes_suffix", "label": "Second stat: after", "default": "homes" },
+    { "type": "range", "id": "limit", "label": "Reviews to show", "min": 3, "max": 20, "step": 1, "default": 5 },
+    { "type": "text", "id": "heading_sr", "label": "Accessible heading", "default": "Customer reviews", "info": "Read out by screen readers; not shown." },
+    { "type": "header", "content": "Advanced" },
+    { "type": "text", "id": "anchor", "label": "Anchor ID", "default": "reviews" },
+    {
+      "type": "select", "id": "scene", "label": "Background scene", "default": "1",
+      "options": [
+        { "value": "1", "label": "1 – Surface" }, { "value": "2", "label": "2" },
+        { "value": "3", "label": "3" }, { "value": "4", "label": "4 – Deep" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Purelane reviews rail" }]
+}
+{% endschema %}

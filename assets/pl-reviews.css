@@ -1,0 +1,41 @@
+/* every selector is prefixed with .pl (set on the section wrapper) so it out-ranks pl-base.css whatever the link order */
+.pl .pl-revhead { display: flex; align-items: center; justify-content: center; gap: 10px 18px; flex-wrap: wrap; margin-bottom: 14px; }
+.pl .pl-agg {
+  display: inline-flex; align-items: center; gap: 8px; font-size: 11.5px; font-weight: 700;
+  letter-spacing: .14em; text-transform: uppercase; color: var(--pl-paper-2);
+}
+.pl .pl-agg b { font-family: 'Outfit', sans-serif; font-size: 16px; color: var(--pl-accent-text); letter-spacing: 0; }
+.pl .pl-stars { color: var(--pl-star); font-size: 12px; letter-spacing: .16em; }/* Rail: a normal horizontally scrollable strip by default (no JS, .pl reduced motion, .pl keyboard).
+   pl-reviews.js adds .is-marquee only when it is safe to auto-scroll. */
+.pl .pl-revrail {
+  overflow-x: auto; position: relative; scrollbar-width: none;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+}
+.pl .pl-revrail::-webkit-scrollbar { display: none; }
+.pl .pl-revtrack { display: flex; width: max-content; padding: 4px 0 6px; }
+.pl .pl-revrail.is-marquee { overflow: hidden; }
+.pl .pl-revrail.is-marquee .pl-revtrack { animation: pl-marq var(--pl-marq-duration, 52s) linear infinite; will-change: transform; }
+.pl .pl-revrail.is-marquee:hover .pl-revtrack, .pl .pl-revrail.is-marquee:focus-within .pl-revtrack, .pl .pl-revrail.is-paused .pl-revtrack { animation-play-state: paused; }
+@keyframes pl-marq { from { transform: translate3d(0,0,0); } to { transform: translate3d(-50%,0,0); } }/* margin (not flex gap) so the -50% loop lands exactly on the start of the repeat: no 6px seam */
+.pl .pl-rcard { flex: 0 0 auto; width: 284px; margin-right: 12px; padding: 15px 17px; border-radius: 18px; }
+.pl .pl-rcard .pl-stars { display: block; font-size: 10.5px; letter-spacing: .2em; margin-bottom: 9px; }
+.pl .pl-rcard__title {
+  font-family: 'Outfit', sans-serif; font-size: 12px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .05em; color: var(--pl-surface); margin-bottom: 7px; line-height: 1.3;
+}
+.pl .pl-rcard__body { font-size: 12.6px; color: var(--pl-paper-2); line-height: 1.52; margin-bottom: 11px; }
+.pl .pl-rcard__who {
+  display: flex; align-items: center; gap: 7px; font-size: 9.5px; font-weight: 700;
+  letter-spacing: .12em; text-transform: uppercase; color: var(--pl-paper-3);
+}
+.pl .pl-rcard__who b { color: #01423b; font-weight: 700; }
+.pl .pl-rcard__who svg { width: 12px; height: 12px; color: var(--pl-green); flex: 0 0 auto; }
+.pl .pl-revwrap { position: relative; }
+.pl .pl-revpause {
+  position: absolute; right: 18px; top: 0; z-index: 3; font-size: 11px; font-weight: 700;
+  padding: 6px 10px; border-radius: 999px; background: #fff; color: var(--pl-green);
+}
+.pl .pl-revpause:not(:focus) { width: 1px; height: 1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); }
+
+@media (max-width: 760px) {.pl .pl-rcard { width: 250px; padding: 13px 14px; } }
