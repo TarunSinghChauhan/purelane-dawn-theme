@@ -1,0 +1,60 @@
+{%- comment -%}
+  Product card used by the shop grid. Reads native product data plus three optional metafields:
+    custom.badge         single line text   ("Best seller", "New" ...)
+    custom.rating        decimal            (4.8)   -> swap for reviews.rating if a review app is installed
+    custom.rating_count  integer            (237)
+  Accepts: product (required), index (0-based, drives the reveal stagger), eager (bool, first row)
+{%- endcomment -%}
+{%- liquid
+  assign variant = product.selected_or_first_available_variant
+  assign badge = product.metafields.custom.badge.value
+  assign rating = product.metafields.custom.rating.value
+  assign rating_count = product.metafields.custom.rating_count.value
+  assign stagger = index | modulo: 4
+  assign img_loading = 'lazy'
+  if eager
+    assign img_loading = 'eager'
+  endif
+-%}
+<article class="pl-glass pl-card pl-rv pl-rv-d{{ stagger }}{% unless product.available %} pl-card--soldout{% endunless %}">
+  <div class="pl-card__shot">
+    {%- if product.available == false -%}
+      <span class="pl-pill">Sold out</span>
+    {%- elsif badge != blank -%}
+      <span class="pl-pill">{{ badge }}</span>
+    {%- endif -%}
+    {%- if product.featured_image -%}
+      {% render 'pl-image',
+        image: product.featured_image,
+        widths: '160,240,360',
+        sizes: '(min-width: 860px) 100px, 90px',
+        class: 'pl-card__img',
+        loading: img_loading %}
+    {%- else -%}
+      <span class="pl-tile pl-card__tile">{% render 'pl-icon', name: 'leaf' %}</span>
+    {%- endif -%}
+  </div>
+
+  <h3 class="pl-card__title"><a class="pl-card__link" href="{{ product.url }}">{{ product.title }}</a></h3>
+
+  {%- if rating != blank -%}
+    <p class="pl-card__rate">
+      <span class="pl-visually-hidden">Rated {{ rating }} out of 5{% if rating_count %} from {{ rating_count }} reviews{% endif %}</span>
+      <span aria-hidden="true"><b>★ {{ rating }}</b>{% if rating_count %} · {{ rating_count }} reviews{% endif %}</span>
+    </p>
+  {%- endif -%}
+
+  {% render 'pl-price', price: variant.price, compare_at: variant.compare_at_price, off: 'percent', class: 'pl-card__price' %}
+
+  {%- if product.has_only_default_variant -%}
+    {%- form 'product', product, class: 'pl-card__form', data-pl-atc: '' -%}
+      <input type="hidden" name="id" value="{{ variant.id }}">
+      <button type="submit" class="pl-btn pl-btn--ghost pl-btn--sm pl-btn--block" {% unless product.available %}disabled{% endunless %}>
+        {%- if product.available %}Add to cart{% else %}Sold out{% endif -%}
+      </button>
+      <span class="pl-visually-hidden" role="status" data-pl-atc-status></span>
+    {%- endform -%}
+  {%- else -%}
+    <a class="pl-btn pl-btn--ghost pl-btn--sm pl-btn--block" href="{{ product.url }}">Choose options</a>
+  {%- endif -%}
+</article>

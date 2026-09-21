@@ -1,0 +1,34 @@
+/* every selector is prefixed with .pl (set on the section wrapper) so it out-ranks pl-base.css whatever the link order */
+/* Shop grid + the shared product card */.pl .pl-shelf { display: grid; gap: 14px; grid-template-columns: repeat(2, 1fr); }
+@media (min-width: 860px) {.pl .pl-shelf { grid-template-columns: repeat(4, 1fr); } }
+.pl .pl-card { padding: 16px; display: flex; flex-direction: column; transition: .4s var(--pl-ease); }
+.pl .pl-card:hover { transform: translateY(-5px); }
+.pl .pl-card__shot {
+  height: 150px; border-radius: 14px; margin-bottom: 14px; display: grid; place-items: center;
+  position: relative; overflow: hidden;
+  background: linear-gradient(160deg, rgba(255,255,255,.60), rgba(236,230,247,.42));
+  border: 1px solid rgba(75,58,143,.10);
+}
+.pl .pl-card .pl-pill { position: absolute; top: 9px; left: 9px; z-index: 1; }
+.pl .pl-card__img { height: 122px; width: auto; filter: drop-shadow(0 8px 13px rgba(0,74,66,.13)); }
+.pl .pl-card__tile { width: 64px; height: 96px; }
+.pl .pl-card__title {
+  font-family: 'Outfit', sans-serif; font-size: 13.5px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .03em; color: var(--pl-surface); line-height: 1.2; margin-bottom: 7px;
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;   /* very long titles */
+  overflow-wrap: anywhere;
+}
+/* whole card is the click target for the product page;.pl the cart button sits above it */
+.pl-card__link::after { content: ""; position: absolute; inset: 0; z-index: 1; }
+.pl .pl-card__link:focus-visible { outline: none; }
+.pl .pl-card__link:focus-visible::after { outline: 2px solid var(--pl-green); outline-offset: -3px; border-radius: var(--pl-r); }
+.pl .pl-card__rate { font-size: 11.5px; color: var(--pl-paper-2); margin-bottom: 10px; }
+.pl .pl-card__rate b { color: var(--pl-accent-text); font-weight: 700; }
+.pl .pl-card__price { margin-top: auto; margin-bottom: 12px; }
+.pl .pl-card__price strong { font-size: 18px; }
+.pl .pl-card__price s { font-size: 12px; }
+.pl .pl-card__price em { font-size: 10px; letter-spacing: .08em; color: var(--pl-accent-text); }
+.pl .pl-card__form { position: relative; z-index: 2; }
+.pl .pl-card > .pl-btn { position: relative; z-index: 2; }
+.pl .pl-card--soldout .pl-card__img { opacity: .5; filter: grayscale(.5) drop-shadow(0 8px 13px rgba(0,74,66,.13)); }
+@media (max-width: 760px) {.pl .pl-card__shot { height: 126px; } }
