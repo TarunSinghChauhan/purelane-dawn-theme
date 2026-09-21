@@ -1,0 +1,26 @@
+{%- comment -%}
+  Price row shared by the shop card, combo card and hero price flag.
+  Accepts:
+    price      - cents (required)
+    compare_at - cents (optional; only shown when higher than price)
+    off        - 'percent' (33% off) | 'amount' (Save ₹249) | blank (no chip)
+    class      - extra css class on the wrapper
+{%- endcomment -%}
+{%- liquid
+  assign pl_has_compare = false
+  if compare_at and compare_at > price
+    assign pl_has_compare = true
+    assign pl_saved = compare_at | minus: price
+  endif
+-%}
+<div class="pl-price{% if class %} {{ class }}{% endif %}">
+  <strong>{{ price | money_without_trailing_zeros }}</strong>
+  {%- if pl_has_compare -%}
+    <s><span class="pl-visually-hidden">Regular price </span>{{ compare_at | money_without_trailing_zeros }}</s>
+    {%- if off == 'percent' -%}
+      <em>{{ pl_saved | times: 100.0 | divided_by: compare_at | round }}% off</em>
+    {%- elsif off == 'amount' -%}
+      <em>Save {{ pl_saved | money_without_trailing_zeros }}</em>
+    {%- endif -%}
+  {%- endif -%}
+</div>

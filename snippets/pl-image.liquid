@@ -1,0 +1,27 @@
+{%- comment -%}
+  Responsive <img> with intrinsic width/height (no layout shift) — size it from CSS with height + width:auto.
+  Accepts:
+    image          - image object (required)
+    widths         - comma list of srcset widths, default '200,400,600'
+    sizes          - sizes attribute, default '200px'
+    alt            - defaults to '' (decorative); pass the product title where the image is the only label
+    class          - css class
+    loading        - 'lazy' (default) | 'eager'
+    fetchpriority  - 'high' | 'low' | 'auto'
+{%- endcomment -%}
+{%- liquid
+  assign pl_widths = widths | default: '200,400,600' | split: ','
+  assign pl_loading = loading | default: 'lazy'
+-%}
+<img
+  src="{{ image | image_url: width: 400 }}"
+  srcset="{%- for w in pl_widths -%}{%- assign wn = w | plus: 0 -%}{%- if image.width >= wn -%}{{ image | image_url: width: wn }} {{ wn }}w{%- unless forloop.last -%}, {% endunless -%}{%- endif -%}{%- endfor -%}"
+  sizes="{{ sizes | default: '200px' }}"
+  width="{{ image.width }}"
+  height="{{ image.height }}"
+  alt="{{ alt | default: '' | escape }}"
+  loading="{{ pl_loading }}"
+  decoding="async"
+  {% if fetchpriority %}fetchpriority="{{ fetchpriority }}"{% endif %}
+  {% if class %}class="{{ class }}"{% endif %}
+>
