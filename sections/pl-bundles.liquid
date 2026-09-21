@@ -12,7 +12,7 @@
 {%- assign tiers = shop.metaobjects.pl_bundle_tier.values -%}
 
 <section
-  class="pl-sec full-width"
+  class="pl-sec"
   id="{{ section.settings.anchor | default: 'bundles' | handleize }}"
   data-pl-scene="{{ section.settings.scene }}"
 >
@@ -27,7 +27,11 @@
 
     {%- if tiers.size > 0 -%}
       <ul class="pl-tiers" role="list">
-        {%- for t in tiers limit: section.settings.limit -%}
+        {%- comment -%} Show tiers smallest quantity first, whatever order they were created in. {%- endcomment -%}
+        {%- assign shown = 0 -%}
+        {%- for q in (1..30) -%}
+        {%- for t in tiers -%}
+          {%- if t.quantity.value != q or shown >= section.settings.limit -%}{%- continue -%}{%- endif -%}
           {%- liquid
             capture tier_data
               render 'pl-tier-data', tier: t
@@ -42,9 +46,9 @@
             assign featured = t.is_featured.value
             assign link = t.link.value | default: '#shop'
             assign cta = t.cta_label.value | default: section.settings.cta_label
-            assign delay = forloop.index0 | plus: 1 | at_most: 4
+            assign delay = shown | plus: 1 | at_most: 4
           -%}
-          <li class="pl-glass pl-tier pl-rv{% if forloop.index0 > 0 %} pl-rv-d{{ delay }}{% endif %}{% if featured %} pl-tier--best{% endif %}">
+          <li class="pl-glass pl-tier pl-rv{% if shown > 0 %} pl-rv-d{{ delay }}{% endif %}{% if featured %} pl-tier--best{% endif %}">
             {%- if t.label.value != blank -%}<span class="pl-tier__tag">{{ t.label.value }}</span>{%- endif -%}
 
             {%- if tier_image != blank or tier_products.size > 0 -%}
@@ -63,7 +67,7 @@
 
             <div class="pl-tier__qty">{{ qty }}<small>{{ section.settings.unit_label }}</small></div>
             {% render 'pl-price', price: price, compare_at: mrp, class: 'pl-tier__price' %}
-            <p class="pl-tier__per">{{ section.settings.per_product_text | replace: '[price]', per }}</p>
+            <p class="pl-tier__per">{{ section.settings.per_product_text | replace: '{price}', per }}</p>
 
             {%- if t.perks.value.size > 0 -%}
               <ul class="pl-tier__perks" role="list">
@@ -77,6 +81,8 @@
               {{ cta }}{% if featured %} {% render 'pl-icon', name: 'arrow' %}{% endif %}
             </a>
           </li>
+          {%- assign shown = shown | plus: 1 -%}
+        {%- endfor -%}
         {%- endfor -%}
       </ul>
     {%- elsif request.design_mode -%}
@@ -99,7 +105,7 @@
     { "type": "range", "id": "limit", "label": "Tiers to show", "min": 1, "max": 6, "step": 1, "default": 3 },
     { "type": "header", "content": "Tier text" },
     { "type": "text", "id": "unit_label", "label": "Unit under the number", "default": "Products" },
-    { "type": "text", "id": "per_product_text", "label": "Per-product line", "default": "Flat [price] per product", "info": "[price] is replaced by the bundle price divided by the quantity." },
+    { "type": "text", "id": "per_product_text", "label": "Per-product line", "default": "Flat {price} per product", "info": "{price} is replaced by the bundle price divided by the quantity." },
     { "type": "text", "id": "cta_label", "label": "Default button label", "default": "Build this box", "info": "A tier can override this." },
     { "type": "header", "content": "Advanced" },
     { "type": "text", "id": "anchor", "label": "Anchor ID", "default": "bundles" },
@@ -114,9 +120,3 @@
   "presets": [{ "name": "Purelane bundles" }]
 }
 {% endschema %}
-
-<!-- DEBUG {{ shop.metaobjects.pl_bundle_tier.values.first.bundle_price.value | json }} | {{ shop.metaobjects.pl_bundle_tier.values.first.bundle_price.value.amount | json }} -->
-
-<!-- DEBUG2 handle={{ shop.metaobjects.pl_bundle_tier.values.first.system.handle }} qty={{ shop.metaobjects.pl_bundle_tier.values.first.quantity.value }} type={{ shop.metaobjects.pl_bundle_tier.values.first.bundle_price.type }} raw={{ shop.metaobjects.pl_bundle_tier.values.first.bundle_price | json }} money={{ shop.metaobjects.pl_bundle_tier.values.first.bundle_price.value | money }} compare={{ shop.metaobjects.pl_bundle_tier.values.first.compare_at_price.value | json }} -->
-
-{% for t in shop.metaobjects.pl_bundle_tier.values %}<!-- DEBUG3 qty={{ t.quantity.value }} type={{ t.bundle_price.type }} val={{ t.bundle_price.value | json }} amt={{ t.bundle_price.value.amount }} money={{ t.bundle_price.value | money }} cmp={{ t.compare_at_price.value | json }} -->{% endfor %}

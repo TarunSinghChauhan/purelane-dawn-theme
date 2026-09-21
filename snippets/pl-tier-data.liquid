@@ -1,5 +1,6 @@
 {%- comment -%}
   Pricing maths for one pl_bundle_tier metaobject entry, shared by the hero and the bundles section.
+  Money fields already hold cents (a bundle_price of 349 reads as 34900), so no *100 here.
   Snippets cannot return values, so it prints "price|mrp|per_product" (integers, price/mrp in cents,
   per_product in whole rupees) and the caller splits it:
 
@@ -11,10 +12,10 @@
 {%- endcomment -%}
 {%- liquid
   assign qty = tier.quantity.value | at_least: 1
-  assign price = tier.bundle_price.value.amount | times: 100 | round
+  assign price = tier.bundle_price.value | plus: 0
   assign mrp = 0
   if tier.compare_at_price.value != blank
-    assign mrp = tier.compare_at_price.value.amount | times: 100 | round
+    assign mrp = tier.compare_at_price.value | plus: 0
   else
     for p in tier.products.value
       assign v = p.selected_or_first_available_variant
