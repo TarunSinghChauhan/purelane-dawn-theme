@@ -114,3 +114,9 @@
   "presets": [{ "name": "Purelane bundles" }]
 }
 {% endschema %}
+
+<!-- DEBUG {{ shop.metaobjects.pl_bundle_tier.values.first.bundle_price.value | json }} | {{ shop.metaobjects.pl_bundle_tier.values.first.bundle_price.value.amount | json }} -->
+
+<!-- DEBUG2 handle={{ shop.metaobjects.pl_bundle_tier.values.first.system.handle }} qty={{ shop.metaobjects.pl_bundle_tier.values.first.quantity.value }} type={{ shop.metaobjects.pl_bundle_tier.values.first.bundle_price.type }} raw={{ shop.metaobjects.pl_bundle_tier.values.first.bundle_price | json }} money={{ shop.metaobjects.pl_bundle_tier.values.first.bundle_price.value | money }} compare={{ shop.metaobjects.pl_bundle_tier.values.first.compare_at_price.value | json }} -->
+
+{% for t in shop.metaobjects.pl_bundle_tier.values %}<!-- DEBUG3 qty={{ t.quantity.value }} type={{ t.bundle_price.type }} val={{ t.bundle_price.value | json }} amt={{ t.bundle_price.value.amount }} money={{ t.bundle_price.value | money }} cmp={{ t.compare_at_price.value | json }} -->{% endfor %}
