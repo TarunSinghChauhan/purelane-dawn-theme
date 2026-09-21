@@ -1,20 +1,23 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "sections": {
-    "main": {
-      "type": "hello-world",
-      "settings": {}
-    }
+    "backdrop": { "type": "pl-backdrop", "settings": { "animate": true } },
+    "hero": {
+      "type": "pl-hero",
+      "blocks": {
+        "badge-1": { "type": "badge", "settings": { "icon": "leaf", "label": "Plant\npowered", "label_short": "Plant powered" } },
+        "badge-2": { "type": "badge", "settings": { "icon": "shield", "label": "Safe for\nkids & pets", "label_short": "Kids & pet safe" } },
+        "badge-3": { "type": "badge", "settings": { "icon": "ban", "label": "Zero harsh\nchemicals", "label_short": "Zero harsh chem" } },
+        "slide-1": { "type": "slide", "settings": { "label": "Single bottle", "tier_quantity": 1 } },
+        "slide-2": { "type": "slide", "settings": { "label": "Any 2 products", "tier_quantity": 2 } },
+        "slide-3": { "type": "slide", "settings": { "label": "Any 3 products", "tier_quantity": 3 } }
+      },
+      "block_order": ["badge-1", "badge-2", "badge-3", "slide-1", "slide-2", "slide-3"],
+      "settings": { "scene": "1" }
+    },
+    "reviews": { "type": "pl-reviews", "settings": { "scene": "1" } },
+    "combos": { "type": "pl-combos", "settings": { "scene": "3" } },
+    "bundles": { "type": "pl-bundles", "settings": { "scene": "3" } },
+    "shop": { "type": "pl-shop", "settings": { "scene": "3", "products_to_show": 8 } }
   },
-  "order": [
-    "main"
-  ]
+  "order": ["backdrop", "hero", "reviews", "combos", "bundles", "shop"]
 }
