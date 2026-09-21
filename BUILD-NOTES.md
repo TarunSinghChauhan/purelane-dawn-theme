@@ -58,13 +58,23 @@ Theme-editor test pass, Lighthouse runs, a proper Shopify Bundles hookup for "Sh
 the remaining prototype sections, self-hosted fonts via `font_picker`, and prev/next buttons on the combo rail.
 
 # AI workflow notes
-**Delegated:** reading the 1,700-line prototype, listing the defects, extracting the base64 art into PNGs, first drafts
-of the sections, the Liquid harness and screenshot diffing, and the seed CSV.
-**Where it failed:** the first hero render collapsed because every section re-links `pl-base.css` and its resets outranked
-the component rules; the fix was `:where()` resets plus `.pl`-scoped component CSS. On the real store it also got the
-money-field handling wrong (twice) and missed Dawn's `full-width` grid class; I found those by running it and pasting the
-errors back.
-**Human judgement:** which deviations from the prototype are defects vs design; the data model (bundle products plus
-metaobjects instead of hard-coded tiers); setting up the store, data and repo myself.
-**With twenty more of these:** a section spec template (settings, data source, states), the shared snippets and reset
-scoping as a starter kit, the harness plus a pixel-diff gate in CI, and a Liquid lint step.
+
+**Delegated:**
+- Reading the 1,700-line prototype and listing its defects
+- Extracting the base64 art into PNGs
+- First drafts of the sections
+- The Liquid harness and screenshot diffing, and the seed CSV
+
+**Where it failed:**
+- The first hero render collapsed: every section re-links `pl-base.css`, and its resets outranked the component rules. The fix was `:where()` resets plus `.pl`-scoped component CSS.
+- On the real store it got the money-field handling wrong (twice) and missed Dawn's `full-width` grid class. I found those by running it and pasting the errors back.
+
+**Human judgement:**
+- Which deviations from the prototype are defects and which are design
+- The data model: bundle products plus metaobjects instead of hard-coded tiers
+- Setting up the store, the data and the repo myself
+
+**With twenty more of these:**
+- A section spec template (settings, data source, states)
+- The shared snippets and reset scoping as a starter kit
+- The harness plus a pixel-diff gate in CI, and a Liquid lint step
