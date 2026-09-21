@@ -1,0 +1,30 @@
+{%- comment -%}
+  Pricing maths for one pl_bundle_tier metaobject entry, shared by the hero and the bundles section.
+  Snippets cannot return values, so it prints "price|mrp|per_product" (integers, price/mrp in cents,
+  per_product in whole rupees) and the caller splits it:
+
+    {% capture d %}{% render 'pl-tier-data', tier: t %}{% endcapture %}
+    {% assign d = d | strip | split: '|' %}   -> d[0] price, d[1] mrp, d[2] per product
+
+  MRP = the tier's optional compare_at_price field, else the sum of each listed product's MRP
+  (its compare-at price, or its price when it has none).
+{%- endcomment -%}
+{%- liquid
+  assign qty = tier.quantity.value | at_least: 1
+  assign price = tier.bundle_price.value.amount | times: 100 | round
+  assign mrp = 0
+  if tier.compare_at_price.value != blank
+    assign mrp = tier.compare_at_price.value.amount | times: 100 | round
+  else
+    for p in tier.products.value
+      assign v = p.selected_or_first_available_variant
+      if v.compare_at_price > v.price
+        assign mrp = mrp | plus: v.compare_at_price
+      else
+        assign mrp = mrp | plus: v.price
+      endif
+    endfor
+  endif
+  assign per = price | divided_by: 100.0 | divided_by: qty | round
+  echo price | append: '|' | append: mrp | append: '|' | append: per
+-%}

@@ -1,0 +1,116 @@
+{{ 'pl-base.css' | asset_url | stylesheet_tag }}
+{{ 'pl-bundles.css' | asset_url | stylesheet_tag }}
+{% render 'pl-fonts' %}
+
+{%- comment -%}
+  Tiers come from the "Purelane bundle tier" metaobject (Content → Metaobjects), in the order the merchant
+  drags them into. Nothing about the tiers (quantity, price, perks, products shown) lives in this file.
+    quantity, bundle_price, compare_at_price (optional), products, image (optional), perks, is_featured, label, link
+  MRP, "Flat ₹X per product" and the strike-through price are derived in snippets/pl-tier-data.liquid.
+{%- endcomment -%}
+
+{%- assign tiers = shop.metaobjects.pl_bundle_tier.values -%}
+
+<section
+  class="pl-sec"
+  id="{{ section.settings.anchor | default: 'bundles' | handleize }}"
+  data-pl-scene="{{ section.settings.scene }}"
+>
+  <div class="pl-wrap">
+    <div class="pl-glass pl-bundles__head pl-rv">
+      <div class="pl-panel-head">
+        {%- if section.settings.kicker != blank -%}<span class="pl-kicker">{{ section.settings.kicker }}</span>{%- endif -%}
+        {%- if section.settings.heading != blank -%}<h2 class="pl-d2">{{ section.settings.heading }}</h2>{%- endif -%}
+        {%- if section.settings.lede != blank -%}<p class="pl-lede">{{ section.settings.lede }}</p>{%- endif -%}
+      </div>
+    </div>
+
+    {%- if tiers.size > 0 -%}
+      <ul class="pl-tiers" role="list">
+        {%- for t in tiers limit: section.settings.limit -%}
+          {%- liquid
+            capture tier_data
+              render 'pl-tier-data', tier: t
+            endcapture
+            assign d = tier_data | strip | split: '|'
+            assign price = d[0] | plus: 0
+            assign mrp = d[1] | plus: 0
+            assign per = d[2] | plus: 0 | times: 100 | money_without_trailing_zeros
+            assign qty = t.quantity.value
+            assign tier_products = t.products.value
+            assign tier_image = t.image.value
+            assign featured = t.is_featured.value
+            assign link = t.link.value | default: '#shop'
+            assign cta = t.cta_label.value | default: section.settings.cta_label
+            assign delay = forloop.index0 | plus: 1 | at_most: 4
+          -%}
+          <li class="pl-glass pl-tier pl-rv{% if forloop.index0 > 0 %} pl-rv-d{{ delay }}{% endif %}{% if featured %} pl-tier--best{% endif %}">
+            {%- if t.label.value != blank -%}<span class="pl-tier__tag">{{ t.label.value }}</span>{%- endif -%}
+
+            {%- if tier_image != blank or tier_products.size > 0 -%}
+              <div class="pl-tierpix{% if tier_products.size >= 5 %} pl-tierpix--five{% endif %}" aria-hidden="true">
+                {%- if tier_image != blank -%}
+                  {% render 'pl-image', image: tier_image, widths: '160,240,360', sizes: '120px' %}
+                {%- else -%}
+                  {%- for p in tier_products limit: 5 -%}
+                    {%- if p.featured_image -%}
+                      {% render 'pl-image', image: p.featured_image, widths: '80,120,180', sizes: '48px' %}
+                    {%- endif -%}
+                  {%- endfor -%}
+                {%- endif -%}
+              </div>
+            {%- endif -%}
+
+            <div class="pl-tier__qty">{{ qty }}<small>{{ section.settings.unit_label }}</small></div>
+            {% render 'pl-price', price: price, compare_at: mrp, class: 'pl-tier__price' %}
+            <p class="pl-tier__per">{{ section.settings.per_product_text | replace: '{price}', per }}</p>
+
+            {%- if t.perks.value.size > 0 -%}
+              <ul class="pl-tier__perks" role="list">
+                {%- for perk in t.perks.value -%}
+                  <li>{% render 'pl-icon', name: 'check' %}{{ perk }}</li>
+                {%- endfor -%}
+              </ul>
+            {%- endif -%}
+
+            <a class="pl-btn pl-btn--block {% if featured %}pl-btn--primary{% else %}pl-btn--ghost{% endif %}" href="{{ link }}">
+              {{ cta }}{% if featured %} {% render 'pl-icon', name: 'arrow' %}{% endif %}
+            </a>
+          </li>
+        {%- endfor -%}
+      </ul>
+    {%- elsif request.design_mode -%}
+      <p class="pl-empty-note">Add "Purelane bundle tier" entries under Content → Metaobjects.</p>
+    {%- endif -%}
+  </div>
+</section>
+
+<script src="{{ 'pl-reveal.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "Purelane bundles",
+  "tag": "div",
+  "class": "pl",
+  "settings": [
+    { "type": "text", "id": "kicker", "label": "Kicker", "default": "Build your bundle" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "One box. Every room." },
+    { "type": "textarea", "id": "lede", "label": "Text", "default": "Mix and match across kitchen, laundry, home and skin. One flat price, no code needed, free shipping either way." },
+    { "type": "range", "id": "limit", "label": "Tiers to show", "min": 1, "max": 6, "step": 1, "default": 3 },
+    { "type": "header", "content": "Tier text" },
+    { "type": "text", "id": "unit_label", "label": "Unit under the number", "default": "Products" },
+    { "type": "text", "id": "per_product_text", "label": "Per-product line", "default": "Flat {price} per product", "info": "{price} is replaced by the bundle price divided by the quantity." },
+    { "type": "text", "id": "cta_label", "label": "Default button label", "default": "Build this box", "info": "A tier can override this." },
+    { "type": "header", "content": "Advanced" },
+    { "type": "text", "id": "anchor", "label": "Anchor ID", "default": "bundles" },
+    {
+      "type": "select", "id": "scene", "label": "Background scene", "default": "3",
+      "options": [
+        { "value": "1", "label": "1 – Surface" }, { "value": "2", "label": "2" },
+        { "value": "3", "label": "3" }, { "value": "4", "label": "4 – Deep" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Purelane bundles" }]
+}
+{% endschema %}

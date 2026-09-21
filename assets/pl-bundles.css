@@ -1,0 +1,46 @@
+/* every selector is prefixed with .pl (set on the section wrapper) so it out-ranks pl-base.css whatever the link order */
+.pl .pl-bundles__head { padding: clamp(26px, 3.4vw, 40px); margin-bottom: 16px; }
+.pl .pl-bundles__head .pl-panel-head { margin-bottom: 0; }
+.pl .pl-bundles__head .pl-lede { margin: 0 auto; }
+@media (max-width: 760px) {.pl .pl-bundles__head { padding: 22px 18px; } }
+.pl .pl-tiers { display: grid; gap: 14px; grid-template-columns: 1fr; }
+@media (min-width: 760px) {.pl .pl-tiers { grid-template-columns: repeat(3, 1fr); } }
+.pl .pl-tier { padding: 24px 22px; transition: .4s var(--pl-ease); }
+.pl .pl-tier:hover { transform: translateY(-5px); }
+.pl .pl-tier--best {
+  border-color: rgba(201,118,29,.46);
+  box-shadow: 0 22px 54px rgba(58,44,112,.14), 0 0 0 1px rgba(201,118,29,.24), var(--pl-g-inset);
+}
+.pl .pl-tier__tag {
+  display: inline-block; font-size: 9.5px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase;
+  padding: 5px 11px; border-radius: 999px; margin-bottom: 14px;
+  background: rgba(201,118,29,.14); border: 1px solid rgba(201,118,29,.34); color: var(--pl-green);
+}
+.pl .pl-tierpix {
+  display: flex; align-items: flex-end; justify-content: center; gap: 2px; height: 78px; margin: -4px 0 16px;
+  padding: 8px 6px; border-radius: 14px;
+  background: linear-gradient(162deg, rgba(255,255,255,.54), rgba(236,230,247,.34)); border: 1px solid rgba(75,58,143,.11);
+}
+.pl .pl-tierpix img { height: 62px; width: auto; filter: drop-shadow(0 5px 8px rgba(0,74,66,.13)); }
+.pl .pl-tierpix--five img { height: 54px; }
+.pl .pl-tier__qty {
+  font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 52px; line-height: .9;
+  color: var(--pl-surface); letter-spacing: -.03em;
+}
+.pl .pl-tier__qty small {
+  display: block; margin-top: 6px; font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600;
+  letter-spacing: .1em; text-transform: uppercase; color: var(--pl-paper-3); line-height: 1.62;
+}
+.pl .pl-tier__price { margin: 16px 0 4px; gap: 0; }
+.pl .pl-tier__price strong { font-size: 27px; color: var(--pl-accent); }
+.pl .pl-tier__price s { font-size: 14px; font-weight: 500; margin-left: 8px; }
+.pl .pl-tier__per { font-size: 12px; color: var(--pl-paper-2); line-height: 1.66; }
+.pl .pl-tier__perks { margin: 16px 0 20px; display: grid; gap: 8px; }
+.pl .pl-tier__perks li { display: flex; gap: 9px; font-size: 13px; color: var(--pl-paper-2); }
+.pl .pl-tier__perks svg { width: 14px; height: 14px; color: var(--pl-green); flex: 0 0 auto; margin-top: 4px; }
+
+@media (max-width: 760px) {.pl .pl-tierpix { height: 70px; }
+.pl .pl-tierpix img { height: 54px; }
+.pl .pl-tierpix--five img { height: 46px; }
+.pl .pl-tier__qty { font-size: 44px; }
+}
